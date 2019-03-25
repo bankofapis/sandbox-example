@@ -1,5 +1,6 @@
 {
 	"clientId": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
 	"clientSecret": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+	"redirectUri": "https://9051fb9d-1c3c-4c75-b036-dcbb662e3e7f.example.org/redirect",
 	"proxy": null
 }

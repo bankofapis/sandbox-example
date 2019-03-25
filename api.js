@@ -59,7 +59,7 @@ async function authoriseProgramatically(consentId) {
 			client_id: config.clientId,
 			response_type: 'code id_token',
 			scope: 'openid accounts',
-			redirect_uri: 'https://9051fb9d-1c3c-4c75-b036-dcbb662e3e7f.example.org/redirect',
+			redirect_uri: config.redirectUri,
 			state: 'ABC',
 			request: consentId,
 			authorization_mode: 'AUTO_POSTMAN',
@@ -69,6 +69,26 @@ async function authoriseProgramatically(consentId) {
 	});
 
 	const { redirectUri } = response;
+
+	// get AUTH_CODE from: https://domain/path#p1=v1&code=AUTH_CODE&p3=v3
+	const [ , fragmentIdentifier ] = redirectUri.split('#');
+	const [ , authorizationCode ] = fragmentIdentifier
+		.split('&')
+		.map(parameter => parameter.split('='))
+		.find(([key]) => key === 'code');
+
+	return authorizationCode;
+}
+
+async function authoriseManually(consentId, initiateUserAuthorisation) {
+	const uri = 'https://api.rbs.useinfinite.io/authorize' +
+		`?client_id=${config.clientId}` +
+		'&response_type=code id_token' +
+		'&scope=openid accounts' +
+		`&redirect_uri=${config.redirectUri}` +
+		`&request=${consentId}`;
+
+	const redirectUri = await initiateUserAuthorisation(uri);
 
 	// get AUTH_CODE from: https://domain/path#p1=v1&code=AUTH_CODE&p3=v3
 	const [ , fragmentIdentifier ] = redirectUri.split('#');
@@ -97,5 +117,6 @@ module.exports = {
 	retrieveAccessToken,
 	createAccountAccessConsent,
 	authoriseProgramatically,
+	authoriseManually,
 	getAccounts
 };
