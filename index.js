@@ -1,3 +1,4 @@
+const colors = require('colors/safe');
 const clipboardy = require('clipboardy');
 const config = require('./config.json');
 const {waitForClipboardStartingWith} = require('./clipboard-utils');
@@ -15,18 +16,18 @@ async function authoriseAndGetAccounts(manualAuthorisation = false) {
 	console.log('Getting initial access token...');
 	const accessToken = await retrieveAccessToken();
 
-	console.log('Creating consent...');
+	console.log(`Access Token: ${format(accessToken)}. Creating consent...`);
 	const consentId = await createAccountAccessConsent(accessToken);
 
-	console.log(`Consent ID: ${consentId}. Authorising...`);
+	console.log(`Consent ID: ${format(consentId)}. Authorising...`);
 	const authorisationCode = manualAuthorisation
 		? await startManualAuthorisation(consentId)
 		: await authoriseProgramatically(consentId);
 
-	console.log(`Authorisation code received: ${authorisationCode}. Retreiving authorised access token...`);
+	console.log(`Authorisation code received: ${format(authorisationCode)}. Retreiving authorised access token...`);
 	const authorisedAccesToken = await retrieveAccessToken(authorisationCode);
 
-	console.log('Retrieving users accounts...');
+	console.log(`Access Token: ${format(authorisedAccesToken)} Retrieving users accounts...`);
 	const accounts = await getAccounts(authorisedAccesToken);
 
 	console.log('Accounts:');
@@ -41,4 +42,10 @@ async function startManualAuthorisation(consentId) {
 
 		return await waitForClipboardStartingWith(`https://${config.teamDomain}/redirect`);
 	});
+}
+
+function format(item) {
+	return colors.magenta(item.length > 50
+		? (item.substring(0, 50) + '…')
+		: item);
 }
