@@ -1,5 +1,5 @@
 const config = require('./config.json');
-const requestBase = require('request-promise-native')
+const requestBase = require('request-promise-native');
 
 const request = requestBase.defaults({
 	strictSSL: false,
@@ -14,19 +14,22 @@ const request = requestBase.defaults({
 
 	const authorisationCode = await authoriseProgramatically(consentId, accessToken);
 
-	const authorisedAccesToken = await retreiveAuthorisedAccessToken(authorisationCode);
+	const authorisedAccesToken = await retrieveAccessToken(authorisationCode);
 
 	await getAccounts(authorisedAccesToken);
 })();
 
-async function retrieveAccessToken() {
+async function retrieveAccessToken(authorisationCode = null) {
 	const response = await request({
 		uri: 'https://ob.rbs.useinfinite.io/token',
 		method: 'POST',
 		qs: {
-			grant_type: 'client_credentials',
+			grant_type: authorisationCode
+				? 'authorization_code'
+				: 'client_credentials',
 			client_id: config.clientId,
 			client_secret: config.clientSecret,
+			code: authorisationCode,
 			scope: 'accounts'
 		},
 		headers: {
@@ -39,7 +42,7 @@ async function retrieveAccessToken() {
 
 async function accountAccessConsent(accessToken, consentId = null) {
 	const response = await request({
-		uri: `https://ob.rbs.useinfinite.io/open-banking/v3.1/aisp/account-access-consents`,///{$consentId}`,
+		uri: 'https://ob.rbs.useinfinite.io/open-banking/v3.1/aisp/account-access-consents',
 		method: consentId ? 'GET' : 'POST',
 		headers: {
 			Authorization: `Bearer ${accessToken}`,
@@ -79,35 +82,16 @@ async function authoriseProgramatically(consentId) {
 			authorization_result: 'APPROVED',
 			authorization_username: '123456789012@9051fb9d-1c3c-4c75-b036-dcbb662e3e7f.example.org',
 		}
-	})
+	});
 
-	const { redirectUri } = response
-	const [ , fragment ] = redirectUri.split('#')
+	const { redirectUri } = response;
+	const [ , fragment ] = redirectUri.split('#');
 	const [ , authorizationCode ] = fragment
 		.split('&')
 		.map(parameter => parameter.split('='))
-		.find(([key]) => key === 'code')
+		.find(([key]) => key === 'code');
 
-	return authorizationCode
-}
-
-// combine this with the one at the top, they're very similar
-async function retreiveAuthorisedAccessToken(authorizationCode) {
-	const response = await request({
-		uri: 'https://ob.rbs.useinfinite.io/token',
-		method: 'POST',
-		qs: {
-			grant_type: 'authorization_code',
-			client_id: config.clientId,
-			client_secret: config.clientSecret,
-			code: authorizationCode
-		},
-		headers: {
-			'Content-Type': 'application/x-www-form-urlencoded'
-		}
-	});
-
-	return response.access_token;
+	return authorizationCode;
 }
 
 async function getAccounts(accessToken) {
@@ -120,5 +104,5 @@ async function getAccounts(accessToken) {
 		}
 	});
 
-	console.log(response)
+	console.log(response);
 }
