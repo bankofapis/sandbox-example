@@ -68,16 +68,7 @@ async function authoriseProgramatically(consentId) {
 		}
 	});
 
-	const { redirectUri } = response;
-
-	// get AUTH_CODE from: https://domain/path#p1=v1&code=AUTH_CODE&p3=v3
-	const [ , fragmentIdentifier ] = redirectUri.split('#');
-	const [ , authorizationCode ] = fragmentIdentifier
-		.split('&')
-		.map(parameter => parameter.split('='))
-		.find(([key]) => key === 'code');
-
-	return authorizationCode;
+	return getAuthorisationCode(response.redirectUri);
 }
 
 async function authoriseManually(consentId, initiateUserAuthorisation) {
@@ -90,7 +81,11 @@ async function authoriseManually(consentId, initiateUserAuthorisation) {
 
 	const redirectUri = await initiateUserAuthorisation(uri);
 
-	// get AUTH_CODE from: https://domain/path#p1=v1&code=AUTH_CODE&p3=v3
+	return getAuthorisationCode(redirectUri);
+}
+
+function getAuthorisationCode(redirectUri) {
+	// get AUTH_CODE from something like: https://domain/path#p1=v1&code=AUTH_CODE&p3=v3
 	const [ , fragmentIdentifier ] = redirectUri.split('#');
 	const [ , authorizationCode ] = fragmentIdentifier
 		.split('&')
