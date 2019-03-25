@@ -59,12 +59,12 @@ async function authoriseProgramatically(consentId) {
 			client_id: config.clientId,
 			response_type: 'code id_token',
 			scope: 'openid accounts',
-			redirect_uri: config.redirectUri,
+			redirect_uri: `https://${config.teamDomain}/redirect`,
 			state: 'ABC',
 			request: consentId,
 			authorization_mode: 'AUTO_POSTMAN',
 			authorization_result: 'APPROVED',
-			authorization_username: '123456789012@9051fb9d-1c3c-4c75-b036-dcbb662e3e7f.example.org',
+			authorization_username: `${config.customerId}@${config.teamDomain}`,
 		}
 	});
 
@@ -76,7 +76,7 @@ async function authoriseManually(consentId, initiateUserAuthorisation) {
 		`?client_id=${config.clientId}` +
 		'&response_type=code id_token' +
 		'&scope=openid accounts' +
-		`&redirect_uri=${config.redirectUri}` +
+		`&redirect_uri=https://${config.teamDomain}/redirect` +
 		`&request=${consentId}`;
 
 	const redirectUri = await initiateUserAuthorisation(uri);

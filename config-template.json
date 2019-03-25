@@ -1,6 +1,7 @@
 {
-	"clientId": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
-	"clientSecret": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
-	"redirectUri": "https://9051fb9d-1c3c-4c75-b036-dcbb662e3e7f.example.org/redirect",
+	"clientId": "get from sandbox app credentials",
+	"clientSecret": "get from sandbox app credentials",
+	"teamDomain": "get from sandbox team information",
+	"customerId": "pick from sandbox test data",
 	"proxy": null
 }

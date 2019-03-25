@@ -39,6 +39,6 @@ async function startManualAuthorisation(consentId) {
 		console.log('Url for manual authorisation copied to clipboard, launch in a browser to procced.' +
 			'Once complete, copy the redirected URL to continue...');
 
-		return await waitForClipboardStartingWith(config.redirectUri);
+		return await waitForClipboardStartingWith(`https://${config.teamDomain}/redirect`);
 	});
 }
