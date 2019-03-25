@@ -8,15 +8,23 @@ const request = requestBase.defaults({
 });
 
 (async function() {
+	console.log('Getting initial access token...');
 	const accessToken = await retrieveAccessToken();
 
-	const consentId = await accountAccessConsent(accessToken);
+	console.log('Creating consent...');
+	const consentId = await createAccountAccessConsent(accessToken);
 
+	console.log(`Consent ID: ${consentId}. Authorising automatically...`);
 	const authorisationCode = await authoriseProgramatically(consentId, accessToken);
 
+	console.log('Retreiving authorised access token...');
 	const authorisedAccesToken = await retrieveAccessToken(authorisationCode);
 
-	await getAccounts(authorisedAccesToken);
+	console.log('Retrieving users accounts...');
+	const accounts = await getAccounts(authorisedAccesToken);
+
+	console.log('Accounts:');
+	console.log(JSON.stringify(accounts, null, 4));
 })();
 
 async function retrieveAccessToken(authorisationCode = null) {
@@ -40,15 +48,15 @@ async function retrieveAccessToken(authorisationCode = null) {
 	return response.access_token;
 }
 
-async function accountAccessConsent(accessToken, consentId = null) {
+async function createAccountAccessConsent(accessToken) {
 	const response = await request({
 		uri: 'https://ob.rbs.useinfinite.io/open-banking/v3.1/aisp/account-access-consents',
-		method: consentId ? 'GET' : 'POST',
+		method: 'POST',
 		headers: {
 			Authorization: `Bearer ${accessToken}`,
 			'x-fapi-financial-id': '0015800000jfwB4AAI'
 		},
-		body: !consentId && {
+		body: {
 			Data: {
 				Permissions: [
 					'ReadAccountsDetail',
@@ -62,9 +70,7 @@ async function accountAccessConsent(accessToken, consentId = null) {
 		}
 	});
 
-	return consentId
-		? response
-		: response.Data.ConsentId;
+	return response.Data.ConsentId;
 }
 
 async function authoriseProgramatically(consentId) {
@@ -85,8 +91,10 @@ async function authoriseProgramatically(consentId) {
 	});
 
 	const { redirectUri } = response;
-	const [ , fragment ] = redirectUri.split('#');
-	const [ , authorizationCode ] = fragment
+
+	// get AUTH_CODE from: https://domain/path#p1=v1&code=AUTH_CODE&p3=v3
+	const [ , fragmentIdentifier ] = redirectUri.split('#');
+	const [ , authorizationCode ] = fragmentIdentifier
 		.split('&')
 		.map(parameter => parameter.split('='))
 		.find(([key]) => key === 'code');
@@ -104,5 +112,5 @@ async function getAccounts(accessToken) {
 		}
 	});
 
-	console.log(response);
+	return response.Data.Account;
 }
