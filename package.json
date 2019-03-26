@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "postinstall": "cpy config-template.json . --rename=config.json",
+    "postinstall": "cpy config-template.json . --rename=config.json --no-overwrite",
     "start": "npm run start:automatic",
     "start:manual": "node index.js manual",
     "start:automatic": "node index.js"
