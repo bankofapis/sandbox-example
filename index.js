@@ -27,7 +27,7 @@ async function authoriseAndGetAccounts(manualAuthorisation = false) {
 	console.log(`Authorisation code received: ${format(authorisationCode)}. Retreiving authorised access token...`);
 	const authorisedAccesToken = await retrieveAccessToken(authorisationCode);
 
-	console.log(`Access Token: ${format(authorisedAccesToken)} Retrieving users accounts...`);
+	console.log(`Access Token: ${format(authorisedAccesToken)}. Retrieving users accounts...`);
 	const accounts = await getAccounts(authorisedAccesToken);
 
 	console.log('Accounts:');
@@ -37,8 +37,11 @@ async function authoriseAndGetAccounts(manualAuthorisation = false) {
 async function startManualAuthorisation(consentId) {
 	return await authoriseManually(consentId, async userAuthorisationUrl => {
 		await clipboardy.write(userAuthorisationUrl);
-		console.log('Url for manual authorisation copied to clipboard, launch in a browser to procced.' +
-			'Once complete, copy the redirected URL to continue...');
+
+		console.log();
+		console.log('Url for manual authorisation copied to clipboard, launch in a browser to procced.');
+		console.log('Once complete, copy the redirected URL to continue...');
+		console.log();
 
 		return await waitForClipboardStartingWith(`https://${config.teamDomain}/redirect`);
 	});
