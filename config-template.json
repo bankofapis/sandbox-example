@@ -2,6 +2,6 @@
 	"clientId": "get from sandbox app credentials",
 	"clientSecret": "get from sandbox app credentials",
 	"teamDomain": "get from sandbox team information",
-	"customerId": "pick from sandbox test data",
+	"customerNumber": "pick from sandbox test data",
 	"proxy": null
 }

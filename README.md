@@ -19,7 +19,7 @@ The `config.json` file needs to contain some key information to allow the exampl
 
 * `clientId` & `clientSecret`: these can be found on the sandbox site under Dashboard -> app -> Credentials
 * `teamDomain`: this can be found on the sandbox site under Dashboard -> team -> Team Information
-* `customerId`: this is the customer whose account information you wish to request. You can pick one from the test data you have uploaded to the sandbox under Dashboard -> team -> Test Data (this is only used for [automatic authentication](#1-automatic-authorisation)).
+* `customerNumber`: this is the customer whose account information you wish to request. You can pick one from the test data you have uploaded to the sandbox under Dashboard -> team -> Test Data (this is only used for [automatic authentication](#1-automatic-authorisation)).
 * `proxy`: optionally set a proxy for http requests to go through, or null for no proxy. 
 
 ## Running the app

@@ -64,7 +64,7 @@ async function authoriseProgramatically(consentId) {
 			request: consentId,
 			authorization_mode: 'AUTO_POSTMAN',
 			authorization_result: 'APPROVED',
-			authorization_username: `${config.customerId}@${config.teamDomain}`,
+			authorization_username: `${config.customerNumber}@${config.teamDomain}`,
 		}
 	});
 
