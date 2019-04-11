@@ -26,11 +26,11 @@ async function authoriseAndGetAccounts(manualAuthorisation = false) {
 			? await startManualAuthorisation(consentId)
 			: await authoriseProgramatically(consentId);
 
-		console.log(`Authorisation code received: ${format(authorisationCode)}. Retreiving authorised access token...`);
-		const authorisedAccesToken = await retrieveAccessToken(authorisationCode);
+		console.log(`Authorisation code received: ${format(authorisationCode)}. Retrieving authorised access token...`);
+		const authorisedAccessToken = await retrieveAccessToken(authorisationCode);
 
-		console.log(`Access Token: ${format(authorisedAccesToken)}. Retrieving users accounts...`);
-		const accounts = await getAccounts(authorisedAccesToken);
+		console.log(`Access Token: ${format(authorisedAccessToken)}. Retrieving users accounts...`);
+		const accounts = await getAccounts(authorisedAccessToken);
 
 		console.log('Accounts:');
 		console.log(JSON.stringify(accounts, null, 4));
@@ -48,7 +48,7 @@ async function startManualAuthorisation(consentId) {
 		await clipboardy.write(userAuthorisationUrl);
 
 		console.log();
-		console.log('Url for manual authorisation copied to clipboard, launch in a browser to procced.');
+		console.log('Url for manual authorisation copied to clipboard, launch in a browser to proceed.');
 		console.log('Once complete, copy the redirected URL to continue...');
 		console.log();
 
