@@ -1,4 +1,5 @@
 const colors = require('colors/safe');
+const ConfigError = require('./config-error');
 const clipboardy = require('clipboardy');
 const config = require('./config.json');
 const {waitForClipboardStartingWith} = require('./clipboard-utils');
@@ -13,25 +14,33 @@ const {
 authoriseAndGetAccounts(process.argv[2] === 'manual');
 
 async function authoriseAndGetAccounts(manualAuthorisation = false) {
-	console.log('Getting initial access token...');
-	const accessToken = await retrieveAccessToken();
+	try {
+		console.log('Getting initial access token...');
+		const accessToken = await retrieveAccessToken();
 
-	console.log(`Access Token: ${format(accessToken)}. Creating consent...`);
-	const consentId = await createAccountAccessConsent(accessToken);
+		console.log(`Access Token: ${format(accessToken)}. Creating consent...`);
+		const consentId = await createAccountAccessConsent(accessToken);
 
-	console.log(`Consent ID: ${format(consentId)}. Authorising...`);
-	const authorisationCode = manualAuthorisation
-		? await startManualAuthorisation(consentId)
-		: await authoriseProgramatically(consentId);
+		console.log(`Consent ID: ${format(consentId)}. Authorising...`);
+		const authorisationCode = manualAuthorisation
+			? await startManualAuthorisation(consentId)
+			: await authoriseProgramatically(consentId);
 
-	console.log(`Authorisation code received: ${format(authorisationCode)}. Retreiving authorised access token...`);
-	const authorisedAccesToken = await retrieveAccessToken(authorisationCode);
+		console.log(`Authorisation code received: ${format(authorisationCode)}. Retreiving authorised access token...`);
+		const authorisedAccesToken = await retrieveAccessToken(authorisationCode);
 
-	console.log(`Access Token: ${format(authorisedAccesToken)}. Retrieving users accounts...`);
-	const accounts = await getAccounts(authorisedAccesToken);
+		console.log(`Access Token: ${format(authorisedAccesToken)}. Retrieving users accounts...`);
+		const accounts = await getAccounts(authorisedAccesToken);
 
-	console.log('Accounts:');
-	console.log(JSON.stringify(accounts, null, 4));
+		console.log('Accounts:');
+		console.log(JSON.stringify(accounts, null, 4));
+
+	} catch (error) {
+		if (error instanceof ConfigError)
+			console.log('Configuration error: ', error.message);
+		else
+			throw error;
+	}
 }
 
 async function startManualAuthorisation(consentId) {
