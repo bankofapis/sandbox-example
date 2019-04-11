@@ -7,24 +7,32 @@ const request = require('request-promise-native').defaults({
 });
 
 async function retrieveAccessToken(authorisationCode = null) {
-	const response = await request({
-		uri: 'https://ob.rbs.useinfinite.io/token',
-		method: 'POST',
-		qs: {
-			grant_type: authorisationCode
-				? 'authorization_code'
-				: 'client_credentials',
-			client_id: config.clientId,
-			client_secret: config.clientSecret,
-			code: authorisationCode,
-			scope: 'accounts'
-		},
-		headers: {
-			'Content-Type': 'application/x-www-form-urlencoded'
-		},
-	});
+	try {
+		const response = await request({
+			uri: 'https://ob.rbs.useinfinite.io/token',
+			method: 'POST',
+			qs: {
+				grant_type: authorisationCode
+					? 'authorization_code'
+					: 'client_credentials',
+				client_id: config.clientId,
+				client_secret: config.clientSecret,
+				code: authorisationCode,
+				scope: 'accounts'
+			},
+			headers: {
+				'Content-Type': 'application/x-www-form-urlencoded'
+			},
+		});
 
-	return response.access_token;
+		return response.access_token;
+	}
+	catch (error) {
+		if (error.message === '400 - {"error":"invalid_client"}')
+			throw new ConfigError('clientId or clientSecret incorrect');
+
+		throw error;
+	}
 }
 
 async function createAccountAccessConsent(accessToken) {
