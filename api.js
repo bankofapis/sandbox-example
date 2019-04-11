@@ -82,6 +82,8 @@ async function authoriseProgramatically(consentId) {
 	} catch (error) {
 		if (error.message === '400 - "Redirect Uri is not present or invalid"')
 			throw new ConfigError('teamDomain or app redirect URL incorrect');
+		else if (error.statusCode === 400)
+			throw new ConfigError('customerNumber may be incorrect');
 
 		throw error;
 	}
