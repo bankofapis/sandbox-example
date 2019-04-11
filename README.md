@@ -6,7 +6,7 @@
 2. Register an account and verify email address to login
 3. On the [dashboard](https://developer.rbs.useinfinite.io/dashboard), click on the pre-created demo app (`demo-app-...`)
 4. Under APIs -> Version 3.1.0 of CMA9 Accounts API, click 'Request Access'...
-5. Enable 'Allow <reduced> security' and 'Allow Tpp to programmatically authorise User consents'
+5. Enable 'Allow <reduced> security' and 'Allow Tpp' to programmatically authorise User consents'
 
 ## Getting started
 
