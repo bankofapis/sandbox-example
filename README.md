@@ -39,6 +39,7 @@ This option requires you to open a browser and login as the account owner and au
 1. The example app will create an account-access consent
 2. A URL to the sandbox consent-capture page will be copied to the clipboard
 3. Paste the URL into a browser and login as one of the users in the test data
+	(for the preloaded data you can use the customerNumber '0123456789012' and password '1234567890')
 4. Choose one or more accounts to give consent for the example app to access
 5. Once complete the browser will redirect to a new URL which contains the authorisation code
 6. Copy the new URL to the clipboard
